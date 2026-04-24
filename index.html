@@ -3,142 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChoiceEase - Decision Fatigue Relief</title>
+  <title>ChoiceEase — a gentle place to decide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #faf4ea;
+      --bg-soft: #f3ecde;
+      --surface: #fffdf7;
+      --surface-raised: #fffaf0;
+      --ink: #3d352b;
+      --ink-soft: #6b6153;
+      --ink-muted: #9a9081;
+      --sage: #8ba88b;
+      --sage-deep: #6e8b6e;
+      --lavender: #b8a7c9;
+      --peach: #e8b89a;
+      --border-soft: #ede4d1;
+      --shadow-soft: 0 4px 20px rgba(61, 53, 43, 0.05);
+      --shadow-med: 0 8px 32px rgba(61, 53, 43, 0.08);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-pill: 999px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #2a2621;
+        --bg-soft: #322d27;
+        --surface: #37322b;
+        --surface-raised: #3d3831;
+        --ink: #f0e7d6;
+        --ink-soft: #cbbfa8;
+        --ink-muted: #9a907e;
+        --sage: #9ec09e;
+        --sage-deep: #b8d4b8;
+        --lavender: #cebadd;
+        --peach: #f0c7aa;
+        --border-soft: #4a4338;
+        --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.25);
+        --shadow-med: 0 8px 32px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    body.dark {
+      --bg: #2a2621;
+      --bg-soft: #322d27;
+      --surface: #37322b;
+      --surface-raised: #3d3831;
+      --ink: #f0e7d6;
+      --ink-soft: #cbbfa8;
+      --ink-muted: #9a907e;
+      --sage: #9ec09e;
+      --sage-deep: #b8d4b8;
+      --lavender: #cebadd;
+      --peach: #f0c7aa;
+      --border-soft: #4a4338;
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-med: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    body.light {
+      --bg: #faf4ea;
+      --bg-soft: #f3ecde;
+      --surface: #fffdf7;
+      --surface-raised: #fffaf0;
+      --ink: #3d352b;
+      --ink-soft: #6b6153;
+      --ink-muted: #9a9081;
+      --sage: #8ba88b;
+      --sage-deep: #6e8b6e;
+      --lavender: #b8a7c9;
+      --peach: #e8b89a;
+      --border-soft: #ede4d1;
+      --shadow-soft: 0 4px 20px rgba(61, 53, 43, 0.05);
+      --shadow-med: 0 8px 32px rgba(61, 53, 43, 0.08);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: #ffffff;
-      color: #333;
-      line-height: 1.6;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(184, 167, 201, 0.18), transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(232, 184, 154, 0.18), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(139, 168, 139, 0.14), transparent 50%);
+      background-attachment: fixed;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 560px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 2.5rem 1.25rem 4rem;
       min-height: 100vh;
     }
 
     h1 {
-      font-size: 28px;
+      font-family: 'Fraunces', 'Nunito', serif;
+      font-size: 34px;
       font-weight: 500;
+      letter-spacing: -0.01em;
       margin-bottom: 0.5rem;
+      color: var(--ink);
     }
 
     h2 {
-      font-size: 20px;
+      font-family: 'Fraunces', 'Nunito', serif;
+      font-size: 24px;
       font-weight: 500;
-      margin-bottom: 1rem;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.75rem;
+      color: var(--ink);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      color: var(--ink-soft);
     }
 
     .subtitle {
-      font-size: 14px;
-      color: #666;
+      font-size: 15px;
+      color: var(--ink-soft);
       margin-bottom: 2rem;
+      line-height: 1.6;
     }
 
+    /* Top bar with theme toggle */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 0.5rem;
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-pill);
+      padding: 0.4rem 0.85rem;
+      font-size: 13px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-soft);
+    }
+
+    /* Home button cards */
     .button-list {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 2rem;
     }
 
     .choice-btn {
-      padding: 1rem;
-      border: 0.5px solid #ddd;
-      border-radius: 8px;
-      background: transparent;
+      padding: 1.25rem 1.25rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      background: var(--surface);
       cursor: pointer;
       text-align: left;
-      transition: background 0.2s;
+      font-family: inherit;
+      color: var(--ink);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      min-height: 72px;
     }
 
     .choice-btn:hover {
-      background: #f9f9f9;
+      background: var(--surface-raised);
+      box-shadow: var(--shadow-med);
+      transform: translateY(-1px);
+    }
+
+    .choice-btn:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
     }
 
     .choice-btn h3 {
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 16px;
+      font-weight: 600;
       margin: 0 0 4px 0;
+      color: var(--ink);
     }
 
     .choice-btn p {
-      font-size: 13px;
-      color: #666;
+      font-size: 14px;
+      color: var(--ink-soft);
       margin: 0;
     }
 
+    /* Back button */
     .back-btn {
       background: transparent;
       border: none;
-      color: #0066cc;
+      color: var(--sage-deep);
       cursor: pointer;
       font-size: 14px;
-      margin-bottom: 1rem;
-      padding: 0;
-      font-weight: 500;
+      margin-bottom: 1.25rem;
+      padding: 0.25rem 0.5rem 0.25rem 0;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-sm);
     }
 
     .back-btn:hover {
-      text-decoration: underline;
+      color: var(--ink);
+    }
+
+    .back-btn:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+
+    /* Inputs */
+    textarea, input[type='text'] {
+      width: 100%;
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-soft);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     textarea {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 0.5px solid #ddd;
-      font-family: inherit;
-      font-size: 14px;
-      margin-bottom: 1rem;
       resize: vertical;
-      min-height: 100px;
+      min-height: 120px;
     }
 
-    textarea:focus {
+    textarea::placeholder, input[type='text']::placeholder {
+      color: var(--ink-muted);
+    }
+
+    textarea:focus, input[type='text']:focus {
       outline: none;
-      border-color: #0066cc;
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px rgba(139, 168, 139, 0.18), var(--shadow-soft);
     }
 
-    input[type='text'] {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 0.5px solid #ddd;
-      font-family: inherit;
-      font-size: 14px;
-      margin-bottom: 1rem;
-      box-sizing: border-box;
-    }
-
-    input[type='text']:focus {
-      outline: none;
-      border-color: #0066cc;
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
-    }
-
+    /* Submit button */
     .submit-btn {
       width: 100%;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 0.5px solid #ddd;
-      background: transparent;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--ink);
       cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: inherit;
+      transition: background 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+      min-height: 48px;
+      box-shadow: var(--shadow-soft);
     }
 
     .submit-btn:hover:not(:disabled) {
-      background: #f0f0f0;
+      background: var(--bg-soft);
     }
 
     .submit-btn:disabled {
@@ -147,121 +295,223 @@
     }
 
     .submit-btn.active {
-      background: #0066cc;
-      color: white;
-      border-color: #0066cc;
+      background: var(--sage);
+      color: #fff;
+      border-color: var(--sage);
+      box-shadow: 0 6px 18px rgba(139, 168, 139, 0.28);
     }
 
+    body.dark .submit-btn.active {
+      color: #2a2621;
+    }
+
+    .submit-btn.active:hover {
+      background: var(--sage-deep);
+      border-color: var(--sage-deep);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+
+    /* Result box */
     .result-box {
-      background: #f9f9f9;
-      border-left: 3px solid #0066cc;
-      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-left: 4px solid var(--sage);
+      padding: 1.5rem 1.5rem;
       margin-bottom: 1.5rem;
-      border-radius: 4px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-soft);
     }
 
     .result-text {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #333;
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--ink);
       white-space: pre-wrap;
       word-wrap: break-word;
     }
 
+    /* Disclaimer */
     .disclaimer {
-      padding: 1rem;
-      background: #f5f5f5;
-      border-radius: 8px;
-      font-size: 12px;
-      color: #666;
-      border-top: 0.5px solid #ddd;
+      padding: 1rem 1.1rem;
+      background: var(--bg-soft);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--ink-soft);
       margin-bottom: 1rem;
+      line-height: 1.6;
     }
 
+    /* Screens */
     .screen {
       display: none;
     }
 
     .screen.active {
       display: block;
-      animation: fadeIn 0.2s;
+      animation: fadeIn 0.35s ease-out;
     }
 
     @keyframes fadeIn {
       from {
-        opacity: 0.9;
+        opacity: 0;
+        transform: translateY(6px);
       }
       to {
         opacity: 1;
+        transform: translateY(0);
       }
     }
 
+    /* Loading */
     .loading-text {
-      color: #666;
+      color: var(--ink-soft);
       font-style: italic;
+      font-size: 15px;
+      animation: breathe 2.8s ease-in-out infinite;
     }
 
+    @keyframes breathe {
+      0%, 100% { opacity: 0.65; }
+      50%      { opacity: 1; }
+    }
+
+    /* Error */
     .error-text {
-      color: #d32f2f;
-      padding: 0.75rem;
-      background: #ffebee;
-      border-radius: 8px;
+      color: #a04a3a;
+      padding: 1rem 1.1rem;
+      background: #f8e8de;
+      border: 1px solid #e8ccb8;
+      border-radius: var(--radius-md);
       margin-bottom: 1rem;
-      font-size: 13px;
+      font-size: 14px;
     }
 
+    body.dark .error-text {
+      color: #e8ccb8;
+      background: #453228;
+      border-color: #5a4236;
+    }
+
+    /* Mood chips */
     .mood-chip {
       display: inline-block;
-      padding: 0.5rem 0.75rem;
-      margin: 0.25rem 0.25rem 0.25rem 0;
-      border: 0.5px solid #ddd;
-      border-radius: 999px;
-      background: transparent;
+      padding: 0.6rem 1rem;
+      margin: 0.3rem 0.3rem 0.3rem 0;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      color: var(--ink);
       cursor: pointer;
-      font-size: 13px;
-      transition: background 0.15s, border-color 0.15s;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: background 0.2s, border-color 0.2s, transform 0.1s;
+      min-height: 44px;
     }
 
     .mood-chip:hover {
-      background: #f5f5f5;
+      background: var(--bg-soft);
+    }
+
+    .mood-chip:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
     }
 
     .mood-chip.selected {
-      background: #0066cc;
-      color: white;
-      border-color: #0066cc;
+      background: var(--lavender);
+      color: #fff;
+      border-color: var(--lavender);
+      box-shadow: 0 4px 14px rgba(184, 167, 201, 0.35);
+    }
+
+    body.dark .mood-chip.selected {
+      color: #2a2621;
+    }
+
+    /* Fieldset labels (profile checkboxes) */
+    fieldset {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem !important;
+      margin-bottom: 1.25rem !important;
+      box-shadow: var(--shadow-soft);
+    }
+
+    fieldset legend {
+      color: var(--ink) !important;
+      font-weight: 600;
+      padding: 0 0.5rem;
     }
 
     fieldset label {
       display: inline-block;
-      margin: 0.15rem 0.6rem 0.15rem 0;
-      font-size: 14px;
+      margin: 0.4rem 0.8rem 0.4rem 0;
+      font-size: 15px;
+      color: var(--ink-soft);
       cursor: pointer;
+      min-height: 28px;
     }
 
+    fieldset label:hover {
+      color: var(--ink);
+    }
+
+    input[type='checkbox'] {
+      accent-color: var(--sage);
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Mobile */
     @media (max-width: 680px) {
       .container {
-        padding: 1.5rem 1rem;
+        padding: 1.5rem 1rem 3rem;
       }
 
       h1 {
-        font-size: 24px;
+        font-size: 28px;
       }
 
       h2 {
-        font-size: 18px;
+        font-size: 20px;
+      }
+
+      body {
+        font-size: 15px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- PROFILE SETUP SCREEN (first visit; unstyled scaffold — partner restyles) -->
+    <div class="topbar">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙 dark mode</button>
+    </div>
+
+    <!-- PROFILE SETUP SCREEN -->
     <div id="profileScreen" class="screen">
       <h2>Welcome. Let's tune this to you.</h2>
-      <p class="subtitle">Tell us a little about yourself. Stays on your device. You can change this anytime.</p>
+      <p class="subtitle">A few gentle questions. Everything stays on your device. You can change any of this later.</p>
 
-      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+      <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Neurotype (select any that apply)</legend>
         <label><input type="checkbox" name="neurotype" value="ADHD"> ADHD</label><br/>
         <label><input type="checkbox" name="neurotype" value="autism"> Autism</label><br/>
@@ -270,7 +520,7 @@
         <label><input type="checkbox" name="neurotype" value="other"> Other / prefer not to say</label>
       </fieldset>
 
-      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+      <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">What matters to you right now?</legend>
         <label><input type="checkbox" name="values" value="rest"> Rest</label><br/>
         <label><input type="checkbox" name="values" value="connection"> Connection</label><br/>
@@ -280,7 +530,7 @@
         <label><input type="checkbox" name="values" value="creativity"> Creativity</label>
       </fieldset>
 
-      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+      <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Sensitivities (so we can go gentle)</legend>
         <label><input type="checkbox" name="sensitivities" value="overstimulation"> Overstimulation</label><br/>
         <label><input type="checkbox" name="sensitivities" value="perfectionism"> Perfectionism</label><br/>
@@ -288,14 +538,14 @@
         <label><input type="checkbox" name="sensitivities" value="rejection-sensitivity"> Rejection sensitivity</label>
       </fieldset>
 
-      <button class="submit-btn active" onclick="saveProfileAndContinue()">Save & continue</button>
-      <button class="back-btn" onclick="skipProfile()" style="margin-top:0.5rem;">Skip for now</button>
+      <button class="submit-btn active" onclick="saveProfileAndContinue()">That's me — let's go</button>
+      <button class="back-btn" onclick="skipProfile()" style="margin-top:0.75rem; display:block;">Skip for now</button>
     </div>
 
     <!-- HOME SCREEN -->
     <div id="homeScreen" class="screen active">
       <h1>ChoiceEase</h1>
-      <p class="subtitle">A decision-making assistant for overwhelmed brains</p>
+      <p class="subtitle">A gentle place to decide. No pressure, no wrong answers.</p>
 
       <div class="button-list">
         <button class="choice-btn" onclick="goToDecisionScreen('quickScreen')">
@@ -319,27 +569,27 @@
         </button>
       </div>
 
-      <button class="back-btn" onclick="goToScreen('profileScreen')" style="margin-bottom:1rem;">Edit your profile</button>
+      <button class="back-btn" onclick="goToScreen('profileScreen')" style="margin-bottom:1rem;">✎ Edit your profile</button>
 
       <div class="disclaimer">
-        ℹ️ This tool is designed to reduce cognitive load, not replace your judgment. You know yourself best.
+        🌿 This little tool lightens the cognitive load — it doesn't replace your judgment. You know yourself best.
       </div>
     </div>
 
-    <!-- MOOD CHECK SCREEN (shown before any decision input; unstyled scaffold) -->
+    <!-- MOOD CHECK SCREEN -->
     <div id="moodScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
       <h2>How are you showing up today?</h2>
-      <p class="subtitle">No wrong answer. This helps tailor the suggestions.</p>
+      <p class="subtitle">Take your time. There's no wrong answer — this just helps us meet you where you are.</p>
 
-      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+      <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Energy</legend>
         <button type="button" class="mood-chip" data-mood-energy="low" onclick="pickMoodEnergy('low')">🪫 Low</button>
         <button type="button" class="mood-chip" data-mood-energy="medium" onclick="pickMoodEnergy('medium')">🔋 Medium</button>
         <button type="button" class="mood-chip" data-mood-energy="high" onclick="pickMoodEnergy('high')">⚡ High</button>
       </fieldset>
 
-      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+      <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Emotional state (optional)</legend>
         <button type="button" class="mood-chip" data-mood-emotion="calm" onclick="pickMoodEmotion('calm')">🌿 Calm</button>
         <button type="button" class="mood-chip" data-mood-emotion="focused" onclick="pickMoodEmotion('focused')">🎯 Focused</button>
@@ -348,7 +598,7 @@
         <button type="button" class="mood-chip" data-mood-emotion="numb" onclick="pickMoodEmotion('numb')">🌫️ Numb</button>
       </fieldset>
 
-      <button class="submit-btn" id="moodContinueBtn" onclick="continueFromMood()" disabled>Continue</button>
+      <button class="submit-btn" id="moodContinueBtn" onclick="continueFromMood()" disabled>Okay, continue</button>
     </div>
 
     <!-- QUICK DECISION SCREEN -->
@@ -364,7 +614,7 @@
       ></textarea>
 
       <button class="submit-btn" id="quickBtn" onclick="makeDecision('quick')" disabled>
-        Get Suggestions
+        Show me some options
       </button>
     </div>
 
@@ -391,7 +641,7 @@
       />
 
       <button class="submit-btn" id="structuredBtn" onclick="makeDecision('structured')" disabled>
-        Compare Options
+        Lay them out for me
       </button>
     </div>
 
@@ -408,7 +658,7 @@
       ></textarea>
 
       <button class="submit-btn" id="complexBtn" onclick="makeDecision('complex')" disabled>
-        Break It Down
+        Break this down gently
       </button>
     </div>
 
@@ -425,19 +675,19 @@
       ></textarea>
 
       <button class="submit-btn" id="stuckBtn" onclick="makeDecision('stuck')" disabled>
-        Generate Options
+        Fresh ideas, please
       </button>
     </div>
 
     <!-- RESULT SCREEN -->
     <div id="resultScreen" class="screen">
-      <button class="back-btn" onclick="resetAndGoHome()">← New Decision</button>
-      <h2>Your Result</h2>
+      <button class="back-btn" onclick="resetAndGoHome()">← Another decision</button>
+      <h2>Here's something to consider</h2>
 
       <div id="errorContainer"></div>
 
       <div id="loadingContainer" style="display: none;">
-        <p class="loading-text">💭 Thinking this through with you...</p>
+        <p class="loading-text">🌿 Thinking this through with you...</p>
       </div>
 
       <div id="resultContainer" style="display: none;">
@@ -446,7 +696,7 @@
         </div>
 
         <div class="disclaimer">
-          💡 Remember: This is just a framework. Your gut feeling and unique context matter more than any tool.
+          💙 A little reminder: this is just a starting point. Your gut feeling and your context matter more than any tool.
         </div>
       </div>
     </div>
@@ -456,6 +706,32 @@
     const API_URL = 'http://localhost:3000/api/decide';
     const PROFILE_KEY = 'choiceease_profile';
     const MOOD_KEY = 'choiceease_last_mood';
+    const THEME_KEY = 'choiceease_theme';
+
+    // ---------- Theme ----------
+    function applyTheme(theme) {
+      document.body.classList.remove('light', 'dark');
+      document.body.classList.add(theme);
+      const btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = theme === 'dark' ? '☀️ light mode' : '🌙 dark mode';
+    }
+
+    function toggleTheme() {
+      const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved) {
+        applyTheme(saved);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+      }
+    }
 
     // In-memory state for the current flow
     let pendingDecisionScreen = null;
@@ -672,6 +948,7 @@
 
     // Initialize: show profile on first visit, hydrate form if returning user
     document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
       const existing = loadProfile();
       if (!existing) {
         goToScreen('profileScreen');
