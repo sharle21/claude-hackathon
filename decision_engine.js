@@ -32,11 +32,48 @@ async function callLlama(systemPrompt, userPrompt) {
   return data.choices?.[0]?.message?.content || 'No response received';
 }
 
+// Build a compact user-context block from profile + mood.
+// profile: { neurotype: string[], values: string[], sensitivities: string[] }
+// mood:    { energy: 'low'|'medium'|'high', emotion?: string }
+function buildContextBlock(context = {}) {
+  const { profile = {}, mood = {} } = context;
+  const lines = [];
+
+  if (Array.isArray(profile.neurotype) && profile.neurotype.length) {
+    lines.push(`Neurotype: ${profile.neurotype.join(', ')}`);
+  }
+  if (Array.isArray(profile.values) && profile.values.length) {
+    lines.push(`Core values: ${profile.values.join(', ')}`);
+  }
+  if (Array.isArray(profile.sensitivities) && profile.sensitivities.length) {
+    lines.push(`Sensitivities: ${profile.sensitivities.join(', ')}`);
+  }
+  if (mood.energy) {
+    lines.push(`Current energy: ${mood.energy}`);
+  }
+  if (mood.emotion) {
+    lines.push(`Current emotion: ${mood.emotion}`);
+  }
+
+  if (!lines.length) return '';
+
+  return `\n\nUser context (tailor your response to this):
+${lines.map((l) => `- ${l}`).join('\n')}
+
+Adaptation rules:
+- If energy is "low": bias toward rest, deferral, or the lowest-effort option. Avoid "push through" framing.
+- If energy is "high": it's fine to suggest more ambitious options.
+- If emotion is "overwhelmed" or "anxious": lead with reassurance, offer the smallest next step, avoid listing too many options.
+- If emotion is "focused" or "calm": you can be more analytical.
+- Respect listed values: if "rest" is present, never shame resting. If "connection" is present, surface social options.
+- Respect sensitivities: if "perfectionism" is present, explicitly give permission to pick "good enough".`;
+}
+
 // 1. QUICK DECISION
-async function quickDecision(userInput) {
+async function quickDecision(userInput, context) {
   const systemPrompt = `You are a supportive decision-making assistant for neurodivergent individuals who experience decision fatigue.
 
-You help people make decisions by reducing cognitive load, not by being prescriptive. Be kind. Acknowledge there's no perfect answer.`;
+You help people make decisions by reducing cognitive load, not by being prescriptive. Be kind. Acknowledge there's no perfect answer.${buildContextBlock(context)}`;
 
   const userPrompt = `The user needs help deciding: "${userInput}"
 
@@ -52,10 +89,10 @@ Format: Use bullet points. Keep it under 150 words. Be direct, not flowery.`;
 }
 
 // 2. STRUCTURED COMPARISON
-async function structuredComparison(decision, options) {
+async function structuredComparison(decision, options, context) {
   const systemPrompt = `You are a supportive decision-making assistant for neurodivergent individuals.
 
-Help them compare options clearly and reduce analysis paralysis. Be encouraging.`;
+Help them compare options clearly and reduce analysis paralysis. Be encouraging.${buildContextBlock(context)}`;
 
   const optionsList = options.join(', ');
   const userPrompt = `Decision: "${decision}"
@@ -75,10 +112,10 @@ Format: Use bullet points. Keep each section scannable. No walls of text.`;
 }
 
 // 3. COMPLEX DECISION
-async function complexDecision(userInput) {
+async function complexDecision(userInput, context) {
   const systemPrompt = `You are a supportive decision-making assistant for neurodivergent individuals.
 
-Help them break down big decisions by identifying values, options, and alignment. Acknowledge that big decisions are hard and it's okay to feel stuck.`;
+Help them break down big decisions by identifying values, options, and alignment. Acknowledge that big decisions are hard and it's okay to feel stuck.${buildContextBlock(context)}`;
 
   const userPrompt = `Complex decision: "${userInput}"
 
@@ -96,10 +133,10 @@ Format: Numbered steps. Use bullet points. Keep text scannable. No jargon.`;
 }
 
 // 4. GENERATE OPTIONS (I'M STUCK)
-async function generateOptions(userInput) {
+async function generateOptions(userInput, context) {
   const systemPrompt = `You are a creative but grounded decision assistant for neurodivergent individuals.
 
-When someone is stuck, generate fresh ideas that are realistic and not overwhelming. Acknowledge that sometimes you just need to see new options.`;
+When someone is stuck, generate fresh ideas that are realistic and not overwhelming. Acknowledge that sometimes you just need to see new options.${buildContextBlock(context)}`;
 
   const userPrompt = `The user is stuck and needs fresh options for: "${userInput}"
 
@@ -115,7 +152,6 @@ Format: Numbered list. Keep each option to 3 lines max. Be creative but realisti
   return await callLlama(systemPrompt, userPrompt);
 }
 
-// Export all functions
 module.exports = {
   quickDecision,
   structuredComparison,

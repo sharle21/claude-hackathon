@@ -20,7 +20,7 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 **ChoiceEase** provides structured decision frameworks powered by Llama to:
 
 1. **Reduce cognitive load** — No blank page paralysis
-2. **Offer intelligent guidance** — LLM considers context & neurodivergent needs
+2. **Offer personalized guidance** — Tailored to each user's neurotype, values, and current mood
 3. **Support all decision types** — From "what to eat" to major life choices
 4. **Acknowledge complexity** — Permission to change your mind, no perfect answers
 
@@ -33,13 +33,24 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 | **Complex Decision** | Big life decisions | Values alignment + priority mapping |
 | **I'm Stuck** | Blank slate/overwhelm | 5-6 creative new options |
 
+### Personalization Layer
+
+Before generating a response, ChoiceEase augments every prompt with:
+
+- **User profile** (set once, stored in browser localStorage): neurotype (ADHD, autism, anxiety…), core values (rest, connection, progress…), sensitivities (overstimulation, perfectionism, time-blindness, rejection sensitivity)
+- **Current mood** (picked at the start of each decision): energy level (low / medium / high) and optional emotional state (calm, focused, anxious, overwhelmed, numb)
+
+The model applies explicit adaptation rules — e.g. if energy is low, it biases toward rest and low-effort options and avoids "push through" framing; if perfectionism is flagged, it gives explicit permission to pick "good enough".
+
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Vanilla HTML/CSS/JavaScript (no build step)
+- **Frontend:** Vanilla HTML/CSS/JavaScript (no build step), Google Fonts (Fredoka + M PLUS Rounded 1c + Caveat + Klee One)
 - **Backend:** Node.js + Express
-- **AI:** Meta Llama 3.1 8B Instruct via HuggingFace Inference API (`@huggingface/inference`)
+- **AI:** Meta Llama 3.1 8B Instruct via HuggingFace Inference Providers router (raw `fetch`)
+- **Persistence:** Browser `localStorage` for profile, last mood, and theme preference
+- **Theming:** Lo-fi Ghibli palette — warm paper background with moss, forest, and sunset-orange accents; subtle paper texture; breathing companion animation; dark mode with system preference detection; respects `prefers-reduced-motion`
 - **Deployment:** Local, deployable to Vercel / Render / Fly
 
 ---
@@ -81,10 +92,12 @@ Decision fatigue is a documented psychological phenomenon where decision quality
    ```
 
 5. **Test It**
-   - Click "Quick Decision"
-   - Type "Should I go to the gym today?"
-   - Click "Get Suggestions"
-   - See the model's response ✨
+   - On first visit, fill out the profile (neurotype / values / sensitivities)
+   - Pick a decision type (e.g. "⚡ Quick Decision")
+   - Answer the mood check (energy + optional emotion)
+   - Type something like "Should I go to the gym today?"
+   - Click "Show me some options"
+   - See a response tailored to your profile + current mood ✨
 
 ---
 
@@ -117,9 +130,22 @@ Main decision endpoint.
 {
   "type": "quick|structured|complex|stuck",
   "input": "What should I decide?",
-  "options": ["A", "B", "C"]  // only for "structured"
+  "options": ["A", "B", "C"],
+  "context": {
+    "profile": {
+      "neurotype": ["ADHD", "anxiety"],
+      "values": ["rest", "progress"],
+      "sensitivities": ["perfectionism"]
+    },
+    "mood": {
+      "energy": "low",
+      "emotion": "overwhelmed"
+    }
+  }
 }
 ```
+
+`options` is only required for `structured`. `context` is optional — omit it and the model falls back to a generic supportive response.
 
 **Response:**
 ```json
@@ -157,45 +183,60 @@ Generate new options when user is blank.
 ## 🎨 Design Philosophy
 
 ### For Neurodivergent Users
-- **Minimal design** (reduces sensory overload)
-- **Clear structure** (scaffolding for decision-making)
-- **Permission language** ("no perfect answer," "you can change your mind")
-- **Scannable output** (no walls of text)
-- **No animations** (cognitive accessibility)
+- **Lo-fi Ghibli palette** — warm paper background, moss/forest greens, sunset-orange accents; optional dark mode
+- **Floating card layout** — content sits on a single rounded card with a subtle paper-texture backdrop
+- **Rounded, indie-game type** — Fredoka + M PLUS Rounded 1c + Caveat (handwritten accent)
+- **Breathing companion** — a small leaf that gently pulses on the home screen, and a thinking cat while the model responds
+- **Permission language** — "no perfect answer," "you can change your mind," "take a deep breath"
+- **Scannable output** — no walls of text
+- **Gentle motion only** — brief fade on screen transitions, slow breathing pulse on companion; full respect for `prefers-reduced-motion`
+- **Mood-aware** — adapts recommendations to current energy and emotional state
+- **Profile-aware** — tailors tone and suggestions to declared neurotype, values, and sensitivities
 
 ### For Developers
-- **No build step** (run HTML directly, express server easily)
-- **The LLM does the heavy lifting** (prompts are the product)
-- **Easy to extend** (add new decision types in `decision_engine.js`)
-- **Privacy-first** (runs locally, no data collection)
+- **No build step** — plain HTML + CSS + JS, Express backend
+- **Model-agnostic prompt layer** — `buildContextBlock()` in `decision_engine.js` composes the system prompt so you can swap the model or provider without touching the decision functions
+- **Easy to extend** — add a new decision type by dropping a function into `decision_engine.js` and wiring one `switch` case in `server.js`
+- **Privacy-first** — profile and mood live in the browser's `localStorage`; the only server-side I/O is the LLM call
 
 ---
 
 ## ⚙️ How It Works
 
-### 1. User Interaction
-User fills a form with their decision question and selects a framework.
+### 1. Profile Setup (first visit)
+A modal screen collects neurotype, values, and sensitivities. Saved to `localStorage` under `choiceease_profile`. Returning users skip this automatically.
 
-### 2. Frontend → Backend
-Frontend sends POST request to `/api/decide` with decision type + input.
+### 2. Mood Check (before each decision)
+The user picks an energy level (required) and optional emotional state. Saved to `localStorage` under `choiceease_last_mood`.
 
-### 3. Decision Engine
-Backend calls appropriate decision function in `decision_engine.js`.
+### 3. Frontend → Backend
+Frontend sends POST to `/api/decide` with `{ type, input, options?, context: { profile, mood } }`.
 
-### 4. Llama Integration
-Decision function crafts a tailored prompt and calls Llama 3.1 8B via HuggingFace:
+### 4. Decision Engine
+Backend calls the appropriate decision function in `decision_engine.js`.
+
+### 5. Llama Integration
+The decision function builds a system prompt combining the base instructions with `buildContextBlock(context)` and calls Llama 3.1 8B via the HuggingFace Inference Providers router:
+
 ```javascript
-const response = await client.chatCompletion({
-  model: "meta-llama/Meta-Llama-3.1-8B-Instruct",
-  max_tokens: 1000,
-  messages: [
-    { role: "system", content: "You are a supportive decision assistant for neurodivergent individuals..." },
-    { role: "user", content: userPrompt },
-  ],
+const res = await fetch('https://router.huggingface.co/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.HF_TOKEN}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'meta-llama/Llama-3.1-8B-Instruct',
+    max_tokens: 1000,
+    messages: [
+      { role: 'system', content: systemPrompt }, // includes profile + mood + adaptation rules
+      { role: 'user', content: userPrompt },
+    ],
+  }),
 });
 ```
 
-### 5. Response Handling
+### 6. Response Handling
 The model returns structured guidance (plain text) which is sent back to frontend and displayed.
 
 ---
@@ -349,15 +390,6 @@ This project was built for the **Anthropic Hackathon 2026** under the **Health &
 - HuggingFace for Inference API hosting
 - Neurodivergent communities for feedback on UX
 - Hackathon organizers for the opportunity
-
----
-
-## 📬 Contact
-
-- **Team:** [Your names]
-- **GitHub:** [your-repo-url]
-- **Demo:** [video link if you have it]
-- **Feedback:** [email or contact method]
 
 ---
 
