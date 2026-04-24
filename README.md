@@ -391,14 +391,5 @@ This project was built for the **Anthropic Hackathon 2026** under the **Health &
 
 ---
 
-## 📬 Contact
-
-- **Team:** [Your names]
-- **GitHub:** [your-repo-url]
-- **Demo:** [video link if you have it]
-- **Feedback:** [email or contact method]
-
----
-
 **Made with 💙 for overwhelmed brains.**
 
