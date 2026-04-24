@@ -434,20 +434,31 @@
       color: #2a2621;
     }
 
-    /* Fieldset labels (profile checkboxes) */
+    /* Fieldset labels (profile checkboxes / mood groups) */
     fieldset {
       background: var(--surface);
       border: 1px solid var(--border-soft);
       border-radius: var(--radius-md);
-      padding: 1rem 1.25rem !important;
+      padding: 1.1rem 1.25rem 1rem !important;
       margin-bottom: 1.25rem !important;
       box-shadow: var(--shadow-soft);
     }
 
     fieldset legend {
+      display: block;
+      float: left;
+      width: 100%;
       color: var(--ink) !important;
       font-weight: 600;
-      padding: 0 0.5rem;
+      font-size: 15px;
+      padding: 0 !important;
+      margin: 0 0 0.75rem 0 !important;
+    }
+
+    fieldset::after {
+      content: "";
+      display: table;
+      clear: both;
     }
 
     fieldset label {
