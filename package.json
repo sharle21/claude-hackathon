@@ -1,0 +1,25 @@
+{
+  "name": "choiceease",
+  "version": "1.0.0",
+  "description": "Decision fatigue bot for neurodivergent users",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "decision-making",
+    "neurodivergent",
+    "claude",
+    "ai",
+    "decision-fatigue"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-sdk/sdk": "^0.27.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

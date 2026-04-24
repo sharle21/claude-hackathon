@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChoiceEase - Decision Fatigue Relief</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #ffffff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .button-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .choice-btn {
+      padding: 1rem;
+      border: 0.5px solid #ddd;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .choice-btn:hover {
+      background: #f9f9f9;
+    }
+
+    .choice-btn h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin: 0 0 4px 0;
+    }
+
+    .choice-btn p {
+      font-size: 13px;
+      color: #666;
+      margin: 0;
+    }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: #0066cc;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 1rem;
+      padding: 0;
+      font-weight: 500;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 0.5px solid #ddd;
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 1rem;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+    }
+
+    input[type='text'] {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 0.5px solid #ddd;
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 1rem;
+      box-sizing: border-box;
+    }
+
+    input[type='text']:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 0.5px solid #ddd;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: #f0f0f0;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .submit-btn.active {
+      background: #0066cc;
+      color: white;
+      border-color: #0066cc;
+    }
+
+    .result-box {
+      background: #f9f9f9;
+      border-left: 3px solid #0066cc;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+    }
+
+    .result-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #333;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .disclaimer {
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #666;
+      border-top: 0.5px solid #ddd;
+      margin-bottom: 1rem;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.2s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0.9;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .loading-text {
+      color: #666;
+      font-style: italic;
+    }
+
+    .error-text {
+      color: #d32f2f;
+      padding: 0.75rem;
+      background: #ffebee;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 13px;
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HOME SCREEN -->
+    <div id="homeScreen" class="screen active">
+      <h1>ChoiceEase</h1>
+      <p class="subtitle">A decision-making assistant for overwhelmed brains</p>
+
+      <div class="button-list">
+        <button class="choice-btn" onclick="goToScreen('quickScreen')">
+          <h3>⚡ Quick Decision</h3>
+          <p>Need a fast answer? Get 3 options in 30 seconds.</p>
+        </button>
+
+        <button class="choice-btn" onclick="goToScreen('structuredScreen')">
+          <h3>📋 Structured Comparison</h3>
+          <p>Compare options with pros, cons & effort levels.</p>
+        </button>
+
+        <button class="choice-btn" onclick="goToScreen('complexScreen')">
+          <h3>🧩 Complex Decision</h3>
+          <p>Big decisions with values & priorities alignment.</p>
+        </button>
+
+        <button class="choice-btn" onclick="goToScreen('stuckScreen')">
+          <h3>🤔 I'm Stuck</h3>
+          <p>Generate new options when you're blank or overwhelmed.</p>
+        </button>
+      </div>
+
+      <div class="disclaimer">
+        ℹ️ This tool is designed to reduce cognitive load, not replace your judgment. You know yourself best.
+      </div>
+    </div>
+
+    <!-- QUICK DECISION SCREEN -->
+    <div id="quickScreen" class="screen">
+      <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <h2>Quick Decision</h2>
+      <p class="subtitle">Tell me what you need to decide (yes/no, choose between options, or what to do next).</p>
+
+      <textarea
+        id="quickInput"
+        placeholder="E.g., 'Should I go to the gym today?' or 'Which email should I read first?'"
+        onkeyup="updateButtonState()"
+      ></textarea>
+
+      <button class="submit-btn" id="quickBtn" onclick="makeDecision('quick')" disabled>
+        Get Suggestions
+      </button>
+    </div>
+
+    <!-- STRUCTURED COMPARISON SCREEN -->
+    <div id="structuredScreen" class="screen">
+      <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <h2>Structured Comparison</h2>
+      <p class="subtitle">Compare multiple options side-by-side.</p>
+
+      <textarea
+        id="structuredDecision"
+        placeholder="What are you deciding?"
+        onkeyup="updateButtonState()"
+      ></textarea>
+
+      <label style="font-size: 13px; color: #666; display: block; margin-bottom: 0.5rem;">
+        List your options (comma-separated):
+      </label>
+      <input
+        type="text"
+        id="structuredOptions"
+        placeholder="Option A, Option B, Option C"
+        onkeyup="updateButtonState()"
+      />
+
+      <button class="submit-btn" id="structuredBtn" onclick="makeDecision('structured')" disabled>
+        Compare Options
+      </button>
+    </div>
+
+    <!-- COMPLEX DECISION SCREEN -->
+    <div id="complexScreen" class="screen">
+      <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <h2>Complex Decision</h2>
+      <p class="subtitle">For bigger decisions (career, relationships, major changes).</p>
+
+      <textarea
+        id="complexInput"
+        placeholder="Describe your decision and what matters to you..."
+        onkeyup="updateButtonState()"
+      ></textarea>
+
+      <button class="submit-btn" id="complexBtn" onclick="makeDecision('complex')" disabled>
+        Break It Down
+      </button>
+    </div>
+
+    <!-- I'M STUCK SCREEN -->
+    <div id="stuckScreen" class="screen">
+      <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <h2>I'm Stuck</h2>
+      <p class="subtitle">When you've hit a wall, sometimes you just need fresh ideas.</p>
+
+      <textarea
+        id="stuckInput"
+        placeholder="What are you stuck on? What have you already considered?"
+        onkeyup="updateButtonState()"
+      ></textarea>
+
+      <button class="submit-btn" id="stuckBtn" onclick="makeDecision('stuck')" disabled>
+        Generate Options
+      </button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen" class="screen">
+      <button class="back-btn" onclick="resetAndGoHome()">← New Decision</button>
+      <h2>Your Result</h2>
+
+      <div id="errorContainer"></div>
+
+      <div id="loadingContainer" style="display: none;">
+        <p class="loading-text">💭 Claude is thinking about this...</p>
+      </div>
+
+      <div id="resultContainer" style="display: none;">
+        <div class="result-box">
+          <div id="resultText" class="result-text"></div>
+        </div>
+
+        <div class="disclaimer">
+          💡 Remember: This is just a framework. Your gut feeling and unique context matter more than any tool.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api/decide';
+
+    function goToScreen(screenId) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach((s) => {
+        s.classList.remove('active');
+      });
+
+      // Show target screen
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function updateButtonState() {
+      const activeScreen = document.querySelector('.screen.active').id;
+
+      if (activeScreen === 'quickScreen') {
+        const input = document.getElementById('quickInput').value.trim();
+        const btn = document.getElementById('quickBtn');
+        btn.disabled = !input;
+        btn.classList.toggle('active', !!input);
+      } else if (activeScreen === 'structuredScreen') {
+        const decision = document.getElementById('structuredDecision').value.trim();
+        const options = document.getElementById('structuredOptions').value.trim();
+        const btn = document.getElementById('structuredBtn');
+        btn.disabled = !decision || !options;
+        btn.classList.toggle('active', !!(decision && options));
+      } else if (activeScreen === 'complexScreen') {
+        const input = document.getElementById('complexInput').value.trim();
+        const btn = document.getElementById('complexBtn');
+        btn.disabled = !input;
+        btn.classList.toggle('active', !!input);
+      } else if (activeScreen === 'stuckScreen') {
+        const input = document.getElementById('stuckInput').value.trim();
+        const btn = document.getElementById('stuckBtn');
+        btn.disabled = !input;
+        btn.classList.toggle('active', !!input);
+      }
+    }
+
+    async function makeDecision(type) {
+      let input, options;
+
+      if (type === 'quick') {
+        input = document.getElementById('quickInput').value.trim();
+      } else if (type === 'structured') {
+        input = document.getElementById('structuredDecision').value.trim();
+        const optionsText = document.getElementById('structuredOptions').value.trim();
+        options = optionsText.split(',').map((o) => o.trim());
+      } else if (type === 'complex') {
+        input = document.getElementById('complexInput').value.trim();
+      } else if (type === 'stuck') {
+        input = document.getElementById('stuckInput').value.trim();
+      }
+
+      if (!input) {
+        alert('Please fill in your input');
+        return;
+      }
+
+      // Show result screen with loading
+      goToScreen('resultScreen');
+      document.getElementById('loadingContainer').style.display = 'block';
+      document.getElementById('resultContainer').style.display = 'none';
+      document.getElementById('errorContainer').innerHTML = '';
+
+      try {
+        const payload = { type, input };
+        if (options) {
+          payload.options = options;
+        }
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('loadingContainer').style.display = 'none';
+          document.getElementById('resultText').textContent = data.response;
+          document.getElementById('resultContainer').style.display = 'block';
+        } else {
+          throw new Error(data.error || 'Unknown error');
+        }
+      } catch (error) {
+        document.getElementById('loadingContainer').style.display = 'none';
+        document.getElementById('errorContainer').innerHTML = `<div class="error-text">⚠️ Error: ${error.message}. Make sure the server (node server.js) is running on localhost:3000.</div>`;
+        document.getElementById('resultContainer').style.display = 'block';
+      }
+    }
+
+    function resetAndGoHome() {
+      // Clear all inputs
+      document.getElementById('quickInput').value = '';
+      document.getElementById('structuredDecision').value = '';
+      document.getElementById('structuredOptions').value = '';
+      document.getElementById('complexInput').value = '';
+      document.getElementById('stuckInput').value = '';
+
+      // Reset result screen
+      document.getElementById('resultText').textContent = '';
+      document.getElementById('errorContainer').innerHTML = '';
+      document.getElementById('loadingContainer').style.display = 'none';
+      document.getElementById('resultContainer').style.display = 'none';
+
+      // Go home
+      goToScreen('homeScreen');
+    }
+
+    // Initialize button states
+    document.addEventListener('DOMContentLoaded', () => {
+      updateButtonState();
+    });
+  </script>
+</body>
+</html>
