@@ -1,6 +1,6 @@
 # ChoiceEase: Decision Fatigue Relief for Neurodivergent Minds
 
-> An AI-powered decision assistant designed specifically for people experiencing decision fatigue. Built with Claude API for the Anthropic Hackathon 2026.
+> An AI-powered decision assistant designed specifically for people experiencing decision fatigue. Powered by Llama 3.1 8B Instruct via the HuggingFace Inference API.
 
 ## 🎯 The Problem
 
@@ -17,10 +17,10 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 
 ## 💡 The Solution
 
-**ChoiceEase** provides structured decision frameworks powered by Claude to:
+**ChoiceEase** provides structured decision frameworks powered by Llama to:
 
 1. **Reduce cognitive load** — No blank page paralysis
-2. **Offer intelligent guidance** — Claude considers context & neurodivergent needs
+2. **Offer intelligent guidance** — LLM considers context & neurodivergent needs
 3. **Support all decision types** — From "what to eat" to major life choices
 4. **Acknowledge complexity** — Permission to change your mind, no perfect answers
 
@@ -39,8 +39,8 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 
 - **Frontend:** Vanilla HTML/CSS/JavaScript (no build step)
 - **Backend:** Node.js + Express
-- **AI:** Anthropic Claude Sonnet 4 via `/v1/messages` API
-- **Deployment:** Local (Claude Desktop), can be deployed to Vercel/Heroku
+- **AI:** Meta Llama 3.1 8B Instruct via HuggingFace Inference API (`@huggingface/inference`)
+- **Deployment:** Local, deployable to Vercel / Render / Fly
 
 ---
 
@@ -48,21 +48,22 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 
 ### Prerequisites
 - Node.js 18+
-- Anthropic API key (`sk-...`)
+- HuggingFace account + access token (`hf_...`) — https://huggingface.co/settings/tokens
+- Accept the Llama 3.1 8B Instruct license: https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct
 
 ### Setup (5 minutes)
 
 1. **Clone & Install**
    ```bash
-   git clone https://github.com/yourusername/choiceease.git
-   cd choiceease
+   git clone https://github.com/sharle21/claude-hackathon.git
+   cd claude-hackathon
    npm install
    ```
 
 2. **Add API Key**
    ```bash
-   # Create .env file
-   echo "ANTHROPIC_API_KEY=sk-your-key-here" > .env
+   cp .env.example .env
+   # Edit .env and set HF_TOKEN=hf_your_token_here
    ```
 
 3. **Start Server**
@@ -83,7 +84,7 @@ Decision fatigue is a documented psychological phenomenon where decision quality
    - Click "Quick Decision"
    - Type "Should I go to the gym today?"
    - Click "Get Suggestions"
-   - See Claude's response ✨
+   - See the model's response ✨
 
 ---
 
@@ -92,15 +93,16 @@ Decision fatigue is a documented psychological phenomenon where decision quality
 ```
 choiceease/
 ├── server.js                 # Express server + routes
-├── decision_engine.js        # Claude API integration + prompts
+├── decision_engine.js        # Llama (HF Inference) integration + prompts
 ├── index.html                # Frontend (all-in-one HTML)
 ├── package.json              # Dependencies
-├── .env                      # API key (never commit)
+├── .env                      # HF_TOKEN (never commit)
+├── .env.example              # Template for .env
 ├── .gitignore                # Ignore .env, node_modules
 ├── README.md                 # This file
 ├── QUICK_START.md            # Setup guide
 ├── PRD_CLAUDE_DESKTOP.md     # Detailed requirements
-└── DEVPOST_WRITEUP.md        # Hackathon submission template
+└── CHEAT_SHEET.md            # Quick reference
 ```
 
 ---
@@ -123,7 +125,7 @@ Main decision endpoint.
 ```json
 {
   "success": true,
-  "response": "Claude's structured guidance...",
+  "response": "Model's structured guidance...",
   "error": null
 }
 ```
@@ -163,7 +165,7 @@ Generate new options when user is blank.
 
 ### For Developers
 - **No build step** (run HTML directly, express server easily)
-- **Claude does the heavy lifting** (prompts are the product)
+- **The LLM does the heavy lifting** (prompts are the product)
 - **Easy to extend** (add new decision types in `decision_engine.js`)
 - **Privacy-first** (runs locally, no data collection)
 
@@ -180,19 +182,21 @@ Frontend sends POST request to `/api/decide` with decision type + input.
 ### 3. Decision Engine
 Backend calls appropriate decision function in `decision_engine.js`.
 
-### 4. Claude Integration
-Decision function crafts a tailored prompt and calls Claude Sonnet 4:
+### 4. Llama Integration
+Decision function crafts a tailored prompt and calls Llama 3.1 8B via HuggingFace:
 ```javascript
-const response = await client.messages.create({
-  model: "claude-sonnet-4-20250514",
+const response = await client.chatCompletion({
+  model: "meta-llama/Meta-Llama-3.1-8B-Instruct",
   max_tokens: 1000,
-  system: "You are a supportive decision assistant for neurodivergent individuals...",
-  messages: [{ role: "user", content: userPrompt }]
+  messages: [
+    { role: "system", content: "You are a supportive decision assistant for neurodivergent individuals..." },
+    { role: "user", content: userPrompt },
+  ],
 });
 ```
 
 ### 5. Response Handling
-Claude returns structured guidance (plain text) which is sent back to frontend and displayed.
+The model returns structured guidance (plain text) which is sent back to frontend and displayed.
 
 ---
 
@@ -205,7 +209,7 @@ Claude returns structured guidance (plain text) which is sent back to frontend a
    - "You know yourself best"
 
 2. **Supportive language in prompts**
-   - All Claude prompts include: "acknowledge there's no perfect answer"
+   - All prompts include: "acknowledge there's no perfect answer"
    - "Give permission to change their mind"
    - "Avoid judgment"
 
@@ -214,7 +218,7 @@ Claude returns structured guidance (plain text) which is sent back to frontend a
    - Not for medical/legal decisions (users choose appropriate type)
 
 4. **Error handling**
-   - Graceful fallback if Claude fails
+   - Graceful fallback if the model call fails
    - User-friendly error messages
 
 ### Not In Scope
@@ -282,7 +286,7 @@ curl -X POST http://localhost:3000/api/decide \
   -d '{"type":"quick","input":"should I exercise?"}'
 
 # Should return:
-# {"success":true,"response":"...Claude response..."}
+# {"success":true,"response":"...model response..."}
 ```
 
 ### Browser Testing
@@ -290,7 +294,7 @@ curl -X POST http://localhost:3000/api/decide \
 2. Click each decision type
 3. Fill form and submit
 4. Check browser console (F12) for errors
-5. Verify Claude response displays correctly
+5. Verify model response displays correctly
 
 ### Responsiveness
 Test on mobile viewport (680px):
@@ -341,7 +345,8 @@ This project was built for the **Anthropic Hackathon 2026** under the **Health &
 
 ## 🙏 Acknowledgments
 
-- Anthropic for Claude API (the brain of this tool)
+- Meta for releasing Llama 3.1 open-weights
+- HuggingFace for Inference API hosting
 - Neurodivergent communities for feedback on UX
 - Hackathon organizers for the opportunity
 
