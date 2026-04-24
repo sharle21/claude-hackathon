@@ -6,23 +6,25 @@
   <title>ChoiceEase — a gentle place to decide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Caveat:wght@500;600;700&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #faf4ea;
-      --bg-soft: #f3ecde;
-      --surface: #fffdf7;
+      /* Lo-fi Ghibli palette */
+      --bg: #fdf6e3;              /* warm paper */
+      --bg-soft: #f4ecd6;
+      --surface: #fffdf7;         /* white linen card */
       --surface-raised: #fffaf0;
-      --ink: #3d352b;
-      --ink-soft: #6b6153;
-      --ink-muted: #9a9081;
-      --sage: #8ba88b;
-      --sage-deep: #6e8b6e;
+      --ink: #433e37;              /* soft charcoal */
+      --ink-soft: #7b7267;         /* warm gray */
+      --ink-muted: #a89d8b;
+      --sage: #95a78d;             /* moss */
+      --sage-deep: #6b8e61;        /* forest */
       --lavender: #b8a7c9;
       --peach: #e8b89a;
-      --border-soft: #ede4d1;
-      --shadow-soft: 0 4px 20px rgba(61, 53, 43, 0.05);
-      --shadow-med: 0 8px 32px rgba(61, 53, 43, 0.08);
+      --sunset: #d48166;           /* sunset orange accent */
+      --border-soft: #e6dfcf;
+      --shadow-soft: 0 4px 20px rgba(107, 142, 97, 0.08);
+      --shadow-med: 0 8px 30px rgba(107, 142, 97, 0.12);
       --radius-sm: 12px;
       --radius-md: 18px;
       --radius-lg: 24px;
@@ -42,6 +44,7 @@
         --sage-deep: #b8d4b8;
         --lavender: #cebadd;
         --peach: #f0c7aa;
+        --sunset: #e8a17d;
         --border-soft: #4a4338;
         --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.25);
         --shadow-med: 0 8px 32px rgba(0, 0, 0, 0.35);
@@ -60,26 +63,28 @@
       --sage-deep: #b8d4b8;
       --lavender: #cebadd;
       --peach: #f0c7aa;
+      --sunset: #e8a17d;
       --border-soft: #4a4338;
       --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.25);
       --shadow-med: 0 8px 32px rgba(0, 0, 0, 0.35);
     }
 
     body.light {
-      --bg: #faf4ea;
-      --bg-soft: #f3ecde;
+      --bg: #fdf6e3;
+      --bg-soft: #f4ecd6;
       --surface: #fffdf7;
       --surface-raised: #fffaf0;
-      --ink: #3d352b;
-      --ink-soft: #6b6153;
-      --ink-muted: #9a9081;
-      --sage: #8ba88b;
-      --sage-deep: #6e8b6e;
+      --ink: #433e37;
+      --ink-soft: #7b7267;
+      --ink-muted: #a89d8b;
+      --sage: #95a78d;
+      --sage-deep: #6b8e61;
       --lavender: #b8a7c9;
       --peach: #e8b89a;
-      --border-soft: #ede4d1;
-      --shadow-soft: 0 4px 20px rgba(61, 53, 43, 0.05);
-      --shadow-med: 0 8px 32px rgba(61, 53, 43, 0.08);
+      --sunset: #d48166;
+      --border-soft: #e6dfcf;
+      --shadow-soft: 0 4px 20px rgba(107, 142, 97, 0.08);
+      --shadow-med: 0 8px 30px rgba(107, 142, 97, 0.12);
     }
 
     * {
@@ -94,38 +99,56 @@
     }
 
     body {
-      font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'M PLUS Rounded 1c', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 16px;
       line-height: 1.7;
-      font-weight: 500;
+      font-weight: 400;
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem 3rem;
       background-image:
+        url("https://www.transparenttextures.com/patterns/natural-paper.png"),
         radial-gradient(circle at 10% 10%, rgba(184, 167, 201, 0.18), transparent 45%),
         radial-gradient(circle at 90% 15%, rgba(232, 184, 154, 0.18), transparent 45%),
-        radial-gradient(circle at 50% 90%, rgba(139, 168, 139, 0.14), transparent 50%);
-      background-attachment: fixed;
+        radial-gradient(circle at 50% 90%, rgba(149, 167, 141, 0.18), transparent 50%);
+      background-attachment: fixed, fixed, fixed, fixed;
+    }
+
+    body.dark {
+      background-image:
+        url("https://www.transparenttextures.com/patterns/dark-wood.png"),
+        radial-gradient(circle at 10% 10%, rgba(206, 186, 221, 0.12), transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(240, 199, 170, 0.10), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(158, 192, 158, 0.10), transparent 50%);
     }
 
     .container {
       max-width: 560px;
+      width: 100%;
       margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
-      min-height: 100vh;
+      padding: 2.5rem 2rem 3rem;
+      min-height: 80vh;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-med);
+      position: relative;
     }
 
     h1 {
-      font-family: 'Fraunces', 'Quicksand', serif;
+      font-family: 'Fredoka', 'M PLUS Rounded 1c', sans-serif;
       font-size: 36px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: -0.01em;
       margin-bottom: 0.5rem;
-      color: var(--ink);
+      color: var(--sage-deep);
       text-align: center;
     }
 
     h2 {
-      font-family: 'Fraunces', 'Quicksand', serif;
-      font-size: 26px;
+      font-family: 'Fredoka', 'M PLUS Rounded 1c', sans-serif;
+      font-size: 24px;
       font-weight: 500;
       letter-spacing: -0.005em;
       margin-bottom: 0.75rem;
@@ -198,13 +221,50 @@
     /* Wordmark accent */
     .wordmark-accent {
       font-family: 'Caveat', cursive;
-      color: var(--sage-deep);
-      font-size: 20px;
+      color: var(--sunset);
+      font-size: 22px;
       display: block;
       text-align: center;
       margin-top: -0.25rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Breathing companion (Ghibli-style animated friend) */
+    .companion-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2rem 0 1rem;
+    }
+
+    .breathing-companion {
+      width: 82px;
+      height: 82px;
+      background: var(--bg);
+      border: 2px solid var(--border-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      line-height: 1;
+      animation: breathe 5s ease-in-out infinite;
+      box-shadow: var(--shadow-soft);
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.08); }
+    }
+
+    .companion-msg {
+      font-family: 'Caveat', cursive;
+      color: var(--sage-deep);
+      font-size: 20px;
+      margin-top: 0.75rem;
+      text-align: center;
     }
 
     /* Top bar with theme toggle */
@@ -279,7 +339,7 @@
     .back-btn {
       background: transparent;
       border: none;
-      color: var(--sage-deep);
+      color: var(--sunset);
       cursor: pointer;
       font-size: 14px;
       margin-bottom: 1.25rem;
@@ -619,32 +679,37 @@
     <div id="homeScreen" class="screen active">
       <div class="page-illo home" aria-hidden="true">🌿</div>
       <h1>ChoiceEase</h1>
-      <span class="wordmark-accent">~ take your time ~</span>
+      <span class="wordmark-accent">~ take a deep breath ~</span>
       <p class="subtitle">A gentle place to decide. No pressure, no wrong answers.</p>
 
       <div class="button-list">
         <button class="choice-btn" onclick="goToDecisionScreen('quickScreen')">
           <h3>⚡ Quick Decision</h3>
-          <p>Need a fast answer? Get 3 options in 30 seconds.</p>
+          <p>For the small stuff that feels big.</p>
         </button>
 
         <button class="choice-btn" onclick="goToDecisionScreen('structuredScreen')">
           <h3>📋 Structured Comparison</h3>
-          <p>Compare options with pros, cons & effort levels.</p>
+          <p>Weighing options without the stress.</p>
         </button>
 
         <button class="choice-btn" onclick="goToDecisionScreen('complexScreen')">
           <h3>🧩 Complex Decision</h3>
-          <p>Big decisions with values & priorities alignment.</p>
+          <p>The big ones — values, priorities, all of it.</p>
         </button>
 
         <button class="choice-btn" onclick="goToDecisionScreen('stuckScreen')">
           <h3>🤔 I'm Stuck</h3>
-          <p>Generate new options when you're blank or overwhelmed.</p>
+          <p>Let's turn the fog into a path.</p>
         </button>
       </div>
 
-      <button class="back-btn" onclick="goToScreen('profileScreen')" style="margin-bottom:1rem;">✎ Edit your profile</button>
+      <div class="companion-box">
+        <div class="breathing-companion" aria-hidden="true">🍃</div>
+        <p class="companion-msg">You're doing great.</p>
+      </div>
+
+      <button class="back-btn" onclick="goToScreen('profileScreen')" style="margin-bottom:1rem;">⚙️ Edit your profile</button>
 
       <div class="disclaimer">
         🌿 This little tool lightens the cognitive load — it doesn't replace your judgment. You know yourself best.
@@ -660,9 +725,9 @@
 
       <fieldset>
         <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Energy</legend>
-        <button type="button" class="mood-chip" data-mood-energy="low" onclick="pickMoodEnergy('low')">🪫 Low</button>
-        <button type="button" class="mood-chip" data-mood-energy="medium" onclick="pickMoodEnergy('medium')">🔋 Medium</button>
-        <button type="button" class="mood-chip" data-mood-energy="high" onclick="pickMoodEnergy('high')">⚡ High</button>
+        <button type="button" class="mood-chip" data-mood-energy="low" onclick="pickMoodEnergy('low')">🪫 Low fuel</button>
+        <button type="button" class="mood-chip" data-mood-energy="medium" onclick="pickMoodEnergy('medium')">🔋 Okay</button>
+        <button type="button" class="mood-chip" data-mood-energy="high" onclick="pickMoodEnergy('high')">⚡ Charged</button>
       </fieldset>
 
       <fieldset>
@@ -691,7 +756,7 @@
       ></textarea>
 
       <button class="submit-btn" id="quickBtn" onclick="makeDecision('quick')" disabled>
-        Show me some options
+        Simplify this
       </button>
     </div>
 
@@ -755,20 +820,23 @@
       ></textarea>
 
       <button class="submit-btn" id="stuckBtn" onclick="makeDecision('stuck')" disabled>
-        Fresh ideas, please
+        Find a way out
       </button>
     </div>
 
     <!-- RESULT SCREEN -->
     <div id="resultScreen" class="screen">
-      <button class="back-btn" onclick="resetAndGoHome()">← Another decision</button>
+      <button class="back-btn" onclick="resetAndGoHome()">← New start</button>
       <div class="page-illo result" aria-hidden="true">🌼</div>
       <h2>Here's something to consider</h2>
 
       <div id="errorContainer"></div>
 
       <div id="loadingContainer" style="display: none;">
-        <p class="loading-text">🌿 Thinking this through with you...</p>
+        <div class="companion-box">
+          <div class="breathing-companion" aria-hidden="true">🐱</div>
+          <p class="companion-msg">Llama is thinking with you...</p>
+        </div>
       </div>
 
       <div id="resultContainer" style="display: none;">
