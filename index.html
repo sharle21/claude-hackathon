@@ -6,7 +6,7 @@
   <title>ChoiceEase — a gentle place to decide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #faf4ea;
@@ -94,9 +94,10 @@
     }
 
     body {
-      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 16px;
       line-height: 1.7;
+      font-weight: 500;
       min-height: 100vh;
       background-image:
         radial-gradient(circle at 10% 10%, rgba(184, 167, 201, 0.18), transparent 45%),
@@ -113,21 +114,27 @@
     }
 
     h1 {
-      font-family: 'Fraunces', 'Nunito', serif;
-      font-size: 34px;
+      font-family: 'Fraunces', 'Quicksand', serif;
+      font-size: 36px;
       font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 0.5rem;
       color: var(--ink);
+      text-align: center;
     }
 
     h2 {
-      font-family: 'Fraunces', 'Nunito', serif;
-      font-size: 24px;
+      font-family: 'Fraunces', 'Quicksand', serif;
+      font-size: 26px;
       font-weight: 500;
       letter-spacing: -0.005em;
       margin-bottom: 0.75rem;
       color: var(--ink);
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
     }
 
     h3 {
@@ -144,6 +151,60 @@
       color: var(--ink-soft);
       margin-bottom: 2rem;
       line-height: 1.6;
+    }
+
+    /* Page illustration (cozy emoji-in-blob) */
+    .page-illo {
+      width: 128px;
+      height: 128px;
+      margin: 0.5rem auto 1.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      line-height: 1;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(184, 167, 201, 0.45),
+        rgba(232, 184, 154, 0.28) 55%,
+        rgba(139, 168, 139, 0.12) 80%,
+        transparent 100%);
+      filter: drop-shadow(0 6px 18px rgba(61, 53, 43, 0.08));
+      animation: floaty 6s ease-in-out infinite;
+    }
+
+    body.dark .page-illo {
+      background: radial-gradient(circle at 35% 35%,
+        rgba(206, 186, 221, 0.28),
+        rgba(240, 199, 170, 0.20) 55%,
+        rgba(158, 192, 158, 0.12) 80%,
+        transparent 100%);
+    }
+
+    .page-illo.home    { background: radial-gradient(circle at 35% 35%, rgba(139, 168, 139, 0.45), rgba(184, 167, 201, 0.22) 60%, transparent 100%); }
+    .page-illo.profile { background: radial-gradient(circle at 35% 35%, rgba(232, 184, 154, 0.5), rgba(184, 167, 201, 0.25) 60%, transparent 100%); }
+    .page-illo.mood    { background: radial-gradient(circle at 35% 35%, rgba(184, 167, 201, 0.5), rgba(139, 168, 139, 0.2)  60%, transparent 100%); }
+    .page-illo.quick   { background: radial-gradient(circle at 35% 35%, rgba(255, 221, 150, 0.5), rgba(232, 184, 154, 0.25) 60%, transparent 100%); }
+    .page-illo.compare { background: radial-gradient(circle at 35% 35%, rgba(139, 168, 139, 0.4),  rgba(232, 184, 154, 0.25) 60%, transparent 100%); }
+    .page-illo.complex { background: radial-gradient(circle at 35% 35%, rgba(184, 167, 201, 0.42), rgba(139, 168, 139, 0.25) 60%, transparent 100%); }
+    .page-illo.stuck   { background: radial-gradient(circle at 35% 35%, rgba(232, 184, 154, 0.5),  rgba(184, 167, 201, 0.22) 60%, transparent 100%); }
+    .page-illo.result  { background: radial-gradient(circle at 35% 35%, rgba(255, 210, 170, 0.5),  rgba(139, 168, 139, 0.22) 60%, transparent 100%); }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-6px) rotate(-2deg); }
+    }
+
+    /* Wordmark accent */
+    .wordmark-accent {
+      font-family: 'Caveat', cursive;
+      color: var(--sage-deep);
+      font-size: 20px;
+      display: block;
+      text-align: center;
+      margin-top: -0.25rem;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
     }
 
     /* Top bar with theme toggle */
@@ -519,6 +580,7 @@
 
     <!-- PROFILE SETUP SCREEN -->
     <div id="profileScreen" class="screen">
+      <div class="page-illo profile" aria-hidden="true">🌸</div>
       <h2>Welcome. Let's tune this to you.</h2>
       <p class="subtitle">A few gentle questions. Everything stays on your device. You can change any of this later.</p>
 
@@ -555,7 +617,9 @@
 
     <!-- HOME SCREEN -->
     <div id="homeScreen" class="screen active">
+      <div class="page-illo home" aria-hidden="true">🌿</div>
       <h1>ChoiceEase</h1>
+      <span class="wordmark-accent">~ take your time ~</span>
       <p class="subtitle">A gentle place to decide. No pressure, no wrong answers.</p>
 
       <div class="button-list">
@@ -590,6 +654,7 @@
     <!-- MOOD CHECK SCREEN -->
     <div id="moodScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <div class="page-illo mood" aria-hidden="true">🌤️</div>
       <h2>How are you showing up today?</h2>
       <p class="subtitle">Take your time. There's no wrong answer — this just helps us meet you where you are.</p>
 
@@ -615,6 +680,7 @@
     <!-- QUICK DECISION SCREEN -->
     <div id="quickScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <div class="page-illo quick" aria-hidden="true">⚡</div>
       <h2>Quick Decision</h2>
       <p class="subtitle">Tell me what you need to decide (yes/no, choose between options, or what to do next).</p>
 
@@ -632,6 +698,7 @@
     <!-- STRUCTURED COMPARISON SCREEN -->
     <div id="structuredScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <div class="page-illo compare" aria-hidden="true">⚖️</div>
       <h2>Structured Comparison</h2>
       <p class="subtitle">Compare multiple options side-by-side.</p>
 
@@ -659,6 +726,7 @@
     <!-- COMPLEX DECISION SCREEN -->
     <div id="complexScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <div class="page-illo complex" aria-hidden="true">🌳</div>
       <h2>Complex Decision</h2>
       <p class="subtitle">For bigger decisions (career, relationships, major changes).</p>
 
@@ -676,6 +744,7 @@
     <!-- I'M STUCK SCREEN -->
     <div id="stuckScreen" class="screen">
       <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <div class="page-illo stuck" aria-hidden="true">🔮</div>
       <h2>I'm Stuck</h2>
       <p class="subtitle">When you've hit a wall, sometimes you just need fresh ideas.</p>
 
@@ -693,6 +762,7 @@
     <!-- RESULT SCREEN -->
     <div id="resultScreen" class="screen">
       <button class="back-btn" onclick="resetAndGoHome()">← Another decision</button>
+      <div class="page-illo result" aria-hidden="true">🌼</div>
       <h2>Here's something to consider</h2>
 
       <div id="errorContainer"></div>
