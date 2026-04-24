@@ -10,14 +10,14 @@
   "keywords": [
     "decision-making",
     "neurodivergent",
-    "claude",
+    "llama",
     "ai",
     "decision-fatigue"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-sdk/sdk": "^0.27.3",
+    "@huggingface/inference": "^2.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"

@@ -1,35 +1,28 @@
 // decision_engine.js
-// Contains all Claude prompts and decision logic
+// Decision logic powered by Llama 3.1 8B via HuggingFace Inference
 
-const Anthropic = require('@anthropic-sdk/sdk');
+const { HfInference } = require('@huggingface/inference');
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const client = new HfInference(process.env.HF_TOKEN);
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct';
 
-// Helper: call Claude with a prompt
-async function callClaude(systemPrompt, userPrompt) {
+async function callLlama(systemPrompt, userPrompt) {
   try {
-    const response = await client.messages.create({
+    const response = await client.chatCompletion({
       model: MODEL,
       max_tokens: 1000,
-      system: systemPrompt,
       messages: [
-        {
-          role: 'user',
-          content: userPrompt,
-        },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
     });
 
-    // Extract text from response
-    const text = response.content[0]?.text || 'No response received';
+    const text = response.choices[0]?.message?.content || 'No response received';
     return text;
   } catch (error) {
-    console.error('Claude API error:', error.message);
-    throw new Error(`Claude API error: ${error.message}`);
+    console.error('HF Llama API error:', error.message);
+    throw new Error(`HF Llama API error: ${error.message}`);
   }
 }
 
@@ -49,7 +42,7 @@ Provide:
 
 Format: Use bullet points. Keep it under 150 words. Be direct, not flowery.`;
 
-  return await callClaude(systemPrompt, userPrompt);
+  return await callLlama(systemPrompt, userPrompt);
 }
 
 // 2. STRUCTURED COMPARISON
@@ -72,7 +65,7 @@ Then give a 1-paragraph gentle recommendation that acknowledges trade-offs.
 
 Format: Use bullet points. Keep each section scannable. No walls of text.`;
 
-  return await callClaude(systemPrompt, userPrompt);
+  return await callLlama(systemPrompt, userPrompt);
 }
 
 // 3. COMPLEX DECISION
@@ -93,7 +86,7 @@ Remember: Neurodivergent individuals benefit from clear structure, permission to
 
 Format: Numbered steps. Use bullet points. Keep text scannable. No jargon.`;
 
-  return await callClaude(systemPrompt, userPrompt);
+  return await callLlama(systemPrompt, userPrompt);
 }
 
 // 4. GENERATE OPTIONS (I'M STUCK)
@@ -113,7 +106,7 @@ Include at least one "unconventional" option they might not think of.
 
 Format: Numbered list. Keep each option to 3 lines max. Be creative but realistic.`;
 
-  return await callClaude(systemPrompt, userPrompt);
+  return await callLlama(systemPrompt, userPrompt);
 }
 
 // Export all functions
