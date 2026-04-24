@@ -21,7 +21,7 @@ app.get('/health', (req, res) => {
 // Main decision endpoint
 app.post('/api/decide', async (req, res) => {
   try {
-    const { type, input, options } = req.body;
+    const { type, input, options, context } = req.body;
 
     if (!type || !input) {
       return res.status(400).json({
@@ -34,7 +34,7 @@ app.post('/api/decide', async (req, res) => {
 
     switch (type) {
       case 'quick':
-        response = await decisionEngine.quickDecision(input);
+        response = await decisionEngine.quickDecision(input, context);
         break;
       case 'structured':
         if (!options || options.length === 0) {
@@ -43,13 +43,13 @@ app.post('/api/decide', async (req, res) => {
             error: 'Structured comparison requires options array',
           });
         }
-        response = await decisionEngine.structuredComparison(input, options);
+        response = await decisionEngine.structuredComparison(input, options, context);
         break;
       case 'complex':
-        response = await decisionEngine.complexDecision(input);
+        response = await decisionEngine.complexDecision(input, context);
         break;
       case 'stuck':
-        response = await decisionEngine.generateOptions(input);
+        response = await decisionEngine.generateOptions(input, context);
         break;
       default:
         return res.status(400).json({
