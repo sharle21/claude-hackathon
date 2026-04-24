@@ -1,29 +1,35 @@
 // decision_engine.js
-// Decision logic powered by Llama 3.1 8B via HuggingFace Inference
+// Decision logic powered by Llama 3.1 8B via HuggingFace Inference Providers router
 
-const { HfInference } = require('@huggingface/inference');
-
-const client = new HfInference(process.env.HF_TOKEN);
-
-const MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct';
+const MODEL = 'meta-llama/Llama-3.1-8B-Instruct';
+const HF_ROUTER_URL = 'https://router.huggingface.co/v1/chat/completions';
 
 async function callLlama(systemPrompt, userPrompt) {
-  try {
-    const response = await client.chatCompletion({
+  const res = await fetch(HF_ROUTER_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.HF_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
       model: MODEL,
       max_tokens: 1000,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-    });
+    }),
+  });
 
-    const text = response.choices[0]?.message?.content || 'No response received';
-    return text;
-  } catch (error) {
-    console.error('HF Llama API error:', error.message);
-    throw new Error(`HF Llama API error: ${error.message}`);
+  const raw = await res.text();
+
+  if (!res.ok) {
+    console.error(`HF ${res.status} ${res.statusText}:`, raw);
+    throw new Error(`HF ${res.status}: ${raw.slice(0, 300)}`);
   }
+
+  const data = JSON.parse(raw);
+  return data.choices?.[0]?.message?.content || 'No response received';
 }
 
 // 1. QUICK DECISION
