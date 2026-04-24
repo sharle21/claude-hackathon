@@ -46,11 +46,11 @@ The model applies explicit adaptation rules — e.g. if energy is low, it biases
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Vanilla HTML/CSS/JavaScript (no build step), Google Fonts (Fraunces + Nunito)
+- **Frontend:** Vanilla HTML/CSS/JavaScript (no build step), Google Fonts (Fredoka + M PLUS Rounded 1c + Caveat + Klee One)
 - **Backend:** Node.js + Express
 - **AI:** Meta Llama 3.1 8B Instruct via HuggingFace Inference Providers router (raw `fetch`)
 - **Persistence:** Browser `localStorage` for profile, last mood, and theme preference
-- **Theming:** Warm cream palette with sage + lavender + peach accents; dark mode with system preference detection; respects `prefers-reduced-motion`
+- **Theming:** Lo-fi Ghibli palette — warm paper background with moss, forest, and sunset-orange accents; subtle paper texture; breathing companion animation; dark mode with system preference detection; respects `prefers-reduced-motion`
 - **Deployment:** Local, deployable to Vercel / Render / Fly
 
 ---
@@ -183,11 +183,13 @@ Generate new options when user is blank.
 ## 🎨 Design Philosophy
 
 ### For Neurodivergent Users
-- **Cozy, low-stimulation palette** — warm cream base with soft sage/lavender/peach accents (optional dark mode)
-- **Rounded, generous spacing** — no harsh borders, 44–48px minimum tap targets
-- **Permission language** — "no perfect answer," "you can change your mind," "take your time"
+- **Lo-fi Ghibli palette** — warm paper background, moss/forest greens, sunset-orange accents; optional dark mode
+- **Floating card layout** — content sits on a single rounded card with a subtle paper-texture backdrop
+- **Rounded, indie-game type** — Fredoka + M PLUS Rounded 1c + Caveat (handwritten accent)
+- **Breathing companion** — a small leaf that gently pulses on the home screen, and a thinking cat while the model responds
+- **Permission language** — "no perfect answer," "you can change your mind," "take a deep breath"
 - **Scannable output** — no walls of text
-- **Gentle motion only** — a brief fade on screen transitions and a breathing pulse on loading; full respect for `prefers-reduced-motion`
+- **Gentle motion only** — brief fade on screen transitions, slow breathing pulse on companion; full respect for `prefers-reduced-motion`
 - **Mood-aware** — adapts recommendations to current energy and emotional state
 - **Profile-aware** — tailors tone and suggestions to declared neurotype, values, and sensitivities
 
