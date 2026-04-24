@@ -210,6 +210,35 @@
       font-size: 13px;
     }
 
+    .mood-chip {
+      display: inline-block;
+      padding: 0.5rem 0.75rem;
+      margin: 0.25rem 0.25rem 0.25rem 0;
+      border: 0.5px solid #ddd;
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .mood-chip:hover {
+      background: #f5f5f5;
+    }
+
+    .mood-chip.selected {
+      background: #0066cc;
+      color: white;
+      border-color: #0066cc;
+    }
+
+    fieldset label {
+      display: inline-block;
+      margin: 0.15rem 0.6rem 0.15rem 0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     @media (max-width: 680px) {
       .container {
         padding: 1.5rem 1rem;
@@ -227,36 +256,99 @@
 </head>
 <body>
   <div class="container">
+    <!-- PROFILE SETUP SCREEN (first visit; unstyled scaffold — partner restyles) -->
+    <div id="profileScreen" class="screen">
+      <h2>Welcome. Let's tune this to you.</h2>
+      <p class="subtitle">Tell us a little about yourself. Stays on your device. You can change this anytime.</p>
+
+      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+        <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Neurotype (select any that apply)</legend>
+        <label><input type="checkbox" name="neurotype" value="ADHD"> ADHD</label><br/>
+        <label><input type="checkbox" name="neurotype" value="autism"> Autism</label><br/>
+        <label><input type="checkbox" name="neurotype" value="anxiety"> Anxiety</label><br/>
+        <label><input type="checkbox" name="neurotype" value="depression"> Depression</label><br/>
+        <label><input type="checkbox" name="neurotype" value="other"> Other / prefer not to say</label>
+      </fieldset>
+
+      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+        <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">What matters to you right now?</legend>
+        <label><input type="checkbox" name="values" value="rest"> Rest</label><br/>
+        <label><input type="checkbox" name="values" value="connection"> Connection</label><br/>
+        <label><input type="checkbox" name="values" value="progress"> Progress</label><br/>
+        <label><input type="checkbox" name="values" value="novelty"> Novelty</label><br/>
+        <label><input type="checkbox" name="values" value="stability"> Stability</label><br/>
+        <label><input type="checkbox" name="values" value="creativity"> Creativity</label>
+      </fieldset>
+
+      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+        <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Sensitivities (so we can go gentle)</legend>
+        <label><input type="checkbox" name="sensitivities" value="overstimulation"> Overstimulation</label><br/>
+        <label><input type="checkbox" name="sensitivities" value="perfectionism"> Perfectionism</label><br/>
+        <label><input type="checkbox" name="sensitivities" value="time-blindness"> Time blindness</label><br/>
+        <label><input type="checkbox" name="sensitivities" value="rejection-sensitivity"> Rejection sensitivity</label>
+      </fieldset>
+
+      <button class="submit-btn active" onclick="saveProfileAndContinue()">Save & continue</button>
+      <button class="back-btn" onclick="skipProfile()" style="margin-top:0.5rem;">Skip for now</button>
+    </div>
+
     <!-- HOME SCREEN -->
     <div id="homeScreen" class="screen active">
       <h1>ChoiceEase</h1>
       <p class="subtitle">A decision-making assistant for overwhelmed brains</p>
 
       <div class="button-list">
-        <button class="choice-btn" onclick="goToScreen('quickScreen')">
+        <button class="choice-btn" onclick="goToDecisionScreen('quickScreen')">
           <h3>⚡ Quick Decision</h3>
           <p>Need a fast answer? Get 3 options in 30 seconds.</p>
         </button>
 
-        <button class="choice-btn" onclick="goToScreen('structuredScreen')">
+        <button class="choice-btn" onclick="goToDecisionScreen('structuredScreen')">
           <h3>📋 Structured Comparison</h3>
           <p>Compare options with pros, cons & effort levels.</p>
         </button>
 
-        <button class="choice-btn" onclick="goToScreen('complexScreen')">
+        <button class="choice-btn" onclick="goToDecisionScreen('complexScreen')">
           <h3>🧩 Complex Decision</h3>
           <p>Big decisions with values & priorities alignment.</p>
         </button>
 
-        <button class="choice-btn" onclick="goToScreen('stuckScreen')">
+        <button class="choice-btn" onclick="goToDecisionScreen('stuckScreen')">
           <h3>🤔 I'm Stuck</h3>
           <p>Generate new options when you're blank or overwhelmed.</p>
         </button>
       </div>
 
+      <button class="back-btn" onclick="goToScreen('profileScreen')" style="margin-bottom:1rem;">Edit your profile</button>
+
       <div class="disclaimer">
         ℹ️ This tool is designed to reduce cognitive load, not replace your judgment. You know yourself best.
       </div>
+    </div>
+
+    <!-- MOOD CHECK SCREEN (shown before any decision input; unstyled scaffold) -->
+    <div id="moodScreen" class="screen">
+      <button class="back-btn" onclick="goToScreen('homeScreen')">← Back</button>
+      <h2>How are you showing up today?</h2>
+      <p class="subtitle">No wrong answer. This helps tailor the suggestions.</p>
+
+      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+        <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Energy</legend>
+        <button type="button" class="mood-chip" data-mood-energy="low" onclick="pickMoodEnergy('low')">🪫 Low</button>
+        <button type="button" class="mood-chip" data-mood-energy="medium" onclick="pickMoodEnergy('medium')">🔋 Medium</button>
+        <button type="button" class="mood-chip" data-mood-energy="high" onclick="pickMoodEnergy('high')">⚡ High</button>
+      </fieldset>
+
+      <fieldset style="border:none; padding:0; margin-bottom:1rem;">
+        <legend style="font-size:14px; color:#333; margin-bottom:0.5rem;">Emotional state (optional)</legend>
+        <button type="button" class="mood-chip" data-mood-emotion="calm" onclick="pickMoodEmotion('calm')">🌿 Calm</button>
+        <button type="button" class="mood-chip" data-mood-emotion="focused" onclick="pickMoodEmotion('focused')">🎯 Focused</button>
+        <button type="button" class="mood-chip" data-mood-emotion="anxious" onclick="pickMoodEmotion('anxious')">😶‍🌫️ Anxious</button>
+        <button type="button" class="mood-chip" data-mood-emotion="overwhelmed" onclick="pickMoodEmotion('overwhelmed')">🫠 Overwhelmed</button>
+        <button type="button" class="mood-chip" data-mood-emotion="numb" onclick="pickMoodEmotion('numb')">🌫️ Numb</button>
+      </fieldset>
+
+      <button class="submit-btn" id="moodContinueBtn" onclick="continueFromMood()" disabled>Continue</button>
     </div>
 
     <!-- QUICK DECISION SCREEN -->
@@ -345,7 +437,7 @@
       <div id="errorContainer"></div>
 
       <div id="loadingContainer" style="display: none;">
-        <p class="loading-text">💭 Claude is thinking about this...</p>
+        <p class="loading-text">💭 Thinking this through with you...</p>
       </div>
 
       <div id="resultContainer" style="display: none;">
@@ -362,17 +454,126 @@
 
   <script>
     const API_URL = 'http://localhost:3000/api/decide';
+    const PROFILE_KEY = 'choiceease_profile';
+    const MOOD_KEY = 'choiceease_last_mood';
 
-    function goToScreen(screenId) {
-      // Hide all screens
-      document.querySelectorAll('.screen').forEach((s) => {
-        s.classList.remove('active');
+    // In-memory state for the current flow
+    let pendingDecisionScreen = null;
+    let currentMood = { energy: null, emotion: null };
+
+    // ---------- Storage helpers ----------
+    function loadProfile() {
+      try {
+        return JSON.parse(localStorage.getItem(PROFILE_KEY)) || null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveProfile(profile) {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    }
+
+    function readCheckboxGroup(name) {
+      return Array.from(
+        document.querySelectorAll(`input[type="checkbox"][name="${name}"]:checked`)
+      ).map((el) => el.value);
+    }
+
+    function writeCheckboxGroup(name, values) {
+      const set = new Set(values || []);
+      document.querySelectorAll(`input[type="checkbox"][name="${name}"]`).forEach((el) => {
+        el.checked = set.has(el.value);
       });
+    }
 
-      // Show target screen
+    function hydrateProfileForm() {
+      const p = loadProfile();
+      if (!p) return;
+      writeCheckboxGroup('neurotype', p.neurotype);
+      writeCheckboxGroup('values', p.values);
+      writeCheckboxGroup('sensitivities', p.sensitivities);
+    }
+
+    // ---------- Navigation ----------
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
       document.getElementById(screenId).classList.add('active');
     }
 
+    function goToDecisionScreen(targetScreenId) {
+      pendingDecisionScreen = targetScreenId;
+      currentMood = { energy: null, emotion: null };
+      document.querySelectorAll('.mood-chip.selected').forEach((el) => el.classList.remove('selected'));
+      document.getElementById('moodContinueBtn').disabled = true;
+      document.getElementById('moodContinueBtn').classList.remove('active');
+      goToScreen('moodScreen');
+    }
+
+    // ---------- Profile screen handlers ----------
+    function saveProfileAndContinue() {
+      const profile = {
+        neurotype: readCheckboxGroup('neurotype'),
+        values: readCheckboxGroup('values'),
+        sensitivities: readCheckboxGroup('sensitivities'),
+        updatedAt: new Date().toISOString(),
+      };
+      saveProfile(profile);
+      goToScreen('homeScreen');
+    }
+
+    function skipProfile() {
+      if (!loadProfile()) {
+        saveProfile({ neurotype: [], values: [], sensitivities: [], skipped: true, updatedAt: new Date().toISOString() });
+      }
+      goToScreen('homeScreen');
+    }
+
+    // ---------- Mood handlers ----------
+    function pickMoodEnergy(val) {
+      currentMood.energy = val;
+      document.querySelectorAll('[data-mood-energy]').forEach((el) => {
+        el.classList.toggle('selected', el.dataset.moodEnergy === val);
+      });
+      refreshMoodContinue();
+    }
+
+    function pickMoodEmotion(val) {
+      currentMood.emotion = currentMood.emotion === val ? null : val;
+      document.querySelectorAll('[data-mood-emotion]').forEach((el) => {
+        el.classList.toggle('selected', el.dataset.moodEmotion === currentMood.emotion);
+      });
+    }
+
+    function refreshMoodContinue() {
+      const btn = document.getElementById('moodContinueBtn');
+      const ready = !!currentMood.energy;
+      btn.disabled = !ready;
+      btn.classList.toggle('active', ready);
+    }
+
+    function continueFromMood() {
+      if (!currentMood.energy) return;
+      localStorage.setItem(MOOD_KEY, JSON.stringify({ ...currentMood, at: new Date().toISOString() }));
+      goToScreen(pendingDecisionScreen || 'homeScreen');
+    }
+
+    function buildContext() {
+      const profile = loadProfile() || {};
+      return {
+        profile: {
+          neurotype: profile.neurotype || [],
+          values: profile.values || [],
+          sensitivities: profile.sensitivities || [],
+        },
+        mood: {
+          energy: currentMood.energy || undefined,
+          emotion: currentMood.emotion || undefined,
+        },
+      };
+    }
+
+    // ---------- Decision input buttons ----------
     function updateButtonState() {
       const activeScreen = document.querySelector('.screen.active').id;
 
@@ -420,23 +621,18 @@
         return;
       }
 
-      // Show result screen with loading
       goToScreen('resultScreen');
       document.getElementById('loadingContainer').style.display = 'block';
       document.getElementById('resultContainer').style.display = 'none';
       document.getElementById('errorContainer').innerHTML = '';
 
       try {
-        const payload = { type, input };
-        if (options) {
-          payload.options = options;
-        }
+        const payload = { type, input, context: buildContext() };
+        if (options) payload.options = options;
 
         const response = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
 
@@ -474,8 +670,14 @@
       goToScreen('homeScreen');
     }
 
-    // Initialize button states
+    // Initialize: show profile on first visit, hydrate form if returning user
     document.addEventListener('DOMContentLoaded', () => {
+      const existing = loadProfile();
+      if (!existing) {
+        goToScreen('profileScreen');
+      } else {
+        hydrateProfileForm();
+      }
       updateButtonState();
     });
   </script>
