@@ -1,3 +1,6 @@
+VIDEOLINK : https://drive.google.com/drive/folders/1hnv8V8RzTv679ecLoRcwI9dQ4rrOZ85f
+
+
 # ChoiceEase: Decision Fatigue Relief for Neurodivergent Minds
 
 > An AI-powered decision assistant designed specifically for people experiencing decision fatigue. Powered by Llama 3.1 8B Instruct via the HuggingFace Inference API.
